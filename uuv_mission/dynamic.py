@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from .terrain import generate_reference_and_limits
+from control import PDController
 
 class Submarine:
     def __init__(self):
@@ -97,7 +98,7 @@ class Mission:
 class ClosedLoop:
     def __init__(self, plant: Submarine, controller):
         self.plant = plant
-        self.controller = controller
+        self.controller = controller # PD controller is passed here 
 
     def simulate(self,  mission: Mission, disturbances: np.ndarray) -> Trajectory:
 
@@ -113,7 +114,16 @@ class ClosedLoop:
             positions[t] = self.plant.get_position()
             observation_t = self.plant.get_depth()
             # Call your controller here
-            self.plant.transition(actions[t], disturbances[t])
+
+            # Reference depth for this time step 
+            reference_t = mission.reference[t]
+            # Call the controller from control.py to compute control action 
+            control_action = self.controller.compute_control(reference_t,observation_t)
+            # Store the control action for this time step 
+            actions[t] = control_action
+            # Apply the control action to the plant (submarine)
+            self.plant.transition(control_action,disturbances[t])
+
 
         return Trajectory(positions)
         
