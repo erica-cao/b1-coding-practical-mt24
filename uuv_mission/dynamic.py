@@ -1,5 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass
+import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from .terrain import generate_reference_and_limits
@@ -76,6 +77,20 @@ class Mission:
     @classmethod
     def from_csv(cls, file_name: str):
         # You are required to implement this method
+        """
+        Reads the mission data from a CSV file and returns an instance of Mission.
+        """
+        # Load the CSV file into a pandas DataFrame
+        df = pd.read_csv(file_name)
+        
+        # Extract columns as NumPy arrays
+        reference = df['reference'].values
+        cave_height = df['cave_height'].values
+        cave_depth = df['cave_depth'].values
+        
+        # Return an instance of the Mission class
+        return cls(reference, cave_height, cave_depth)
+
         pass
 
 
