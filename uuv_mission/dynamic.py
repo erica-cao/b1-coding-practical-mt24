@@ -1,10 +1,12 @@
+
 from __future__ import annotations
 from dataclasses import dataclass
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from .terrain import generate_reference_and_limits
-from control import PDController
+from .control import PDController
+
 
 class Submarine:
     def __init__(self):
